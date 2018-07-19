@@ -1,0 +1,14 @@
+class {
+  onMount(input) {
+    this.state = {
+      pieces: this.getElements('stack'),
+      gameOver: false
+    };
+
+  }
+}
+
+div#board
+  for(time in [1, 2, 3])
+    for(color in ['red', 'blue', 'green', 'yellow'])
+      stack key="stack[]"  color=color
