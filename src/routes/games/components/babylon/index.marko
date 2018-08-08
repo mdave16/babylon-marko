@@ -1,14 +1,51 @@
-class {
-  onMount(input) {
-    this.state = {
-      pieces: this.getElements('stack'),
-      gameOver: false
-    };
+import Babylon from './Babylon';
 
+class {
+  onCreate() {
+    this.babylon = new Babylon();
+    this.selected = null;
+  }
+
+  onMount() {
+    this.babylon.on('change', () => {
+      this.forceUpdate();
+    });
+  }
+
+  handleClick(name, event, stack) {
+    console.dir(name);
+    console.dir(event);
+    console.dir(stack);
+    if(this.selected === null) {
+      console.dir(this)
+      console.dir(stack)
+      this.selected = stack;
+    } else {
+      this.babylon.makeMove(this.babylon.currentPlayer, stack, this.selected);
+      this.selected = null
+    }
+  }
+
+  newGame() {
+    this.babylon.newGame();
   }
 }
 
-div#board
-  for(time in [1, 2, 3])
-    for(color in ['red', 'blue', 'green', 'yellow'])
-      stack key="stack[]"  color=color
+$ const babylon = component.babylon;
+$ const board = babylon.board;
+$ const currentPlayer = babylon.currentPlayer;
+$ const isGameOver = babylon.isGameOver;
+$ const winningPlayer = babylon.winningPlayer;
+
+
+div
+  div.player
+    h1 -- ${currentPlayer} (currently 0 and 1, but will be words soon)
+  div.board
+    for(i, stack in board)
+      div.square style={backgroundColor: stack.top, height: stack.size * 100} on-click('handleClick', stack) key="stacks[]" -- ${stack.top}, ${stack.size}, ${i}, ${stack.toString()}
+  div.overlay class=[isGameOver && 'game-over']
+  if(isGameOver)
+    h2 -- winner! ${winningPlayer}
+  div.new
+    button on-click('newGame') -- New Game!
